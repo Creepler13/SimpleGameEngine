@@ -1,5 +1,6 @@
 package core;
 
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -15,56 +16,55 @@ public class GameRenderer {
 		this.window = window;
 	}
 
-	private ArrayList<GameObject> gameObjects = new ArrayList<>();
 	private ArrayList<ArrayList<GameObject>> renderingLayers = new ArrayList<ArrayList<GameObject>>();
 
-	public void update() {
+	public void update(Game gameInstace) {
 
 		renderingLayers.clear();
-		generateLayers(gameObjects);
+		generateLayers(gameInstace.scene);
 
 		BufferedImage i = new BufferedImage(this.window.panel.getWidth(), window.panel.getHeight(),
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = i.createGraphics();
 
 		for (ArrayList<GameObject> arrayList : renderingLayers)
-			for (GameObject gameObject : arrayList)
-				g2d.drawImage(imageRegistry.getImage(gameObject.getImg()), gameObject.transform.getAbsoluteX(),
-						gameObject.transform.getAbsoluteY(), null);
+			for (GameObject gameObject : arrayList) {
+				if (gameObject instanceof ImageObject) {
+					ImageObject io = (ImageObject) gameObject;
+					g2d.drawImage(imageRegistry.getImage(io.getImg()), io.transform.getAbsoluteX(),
+							io.transform.getAbsoluteY(), null);
+				} else if (gameObject instanceof TextObject) {
+					TextObject to = (TextObject) gameObject;
+					g2d.setColor(to.getTextColor());
+					g2d.setFont(to.getFont());
+					g2d.drawString(to.getText(), to.transform.getAbsoluteX(), to.transform.getAbsoluteY());
+				}
 
+			}
 		window.setPanelBC(i);
 	}
 
-	private void generateLayers(ArrayList<GameObject> objects) {
-		for (GameObject gameObject : objects) {
+	@SuppressWarnings("unchecked")
+	private void generateLayers(GameObject scene) {
 
-			int layer = gameObject.transform.layer;
-			if (renderingLayers.size() <= layer)
-				renderingLayers.add(layer, new ArrayList<GameObject>());
-			renderingLayers.get(layer).add(gameObject);
-			gameObject.isRendered = true;
+		int layer = scene.transform.layer;
+		if (renderingLayers.size() <= layer)
+			renderingLayers.add(layer, new ArrayList<GameObject>());
+		renderingLayers.get(layer).add(scene);
+		scene.isRendered = true;
+
+		for (GameObject gameObject : (ArrayList<GameObject>) scene.getGameObjects().clone()) {
 
 			if (gameObject.getGameObjects().size() > 0)
-				generateLayers(gameObject.getGameObjects());
-
-		}
-	}
-
-	public void renderObject(GameObject obj) {
-		gameObjects.add(obj);
-	}
-
-	public void stopRenderingObject(GameObject obj) {
-		gameObjects.remove(obj);
-		afterRemoved(obj);
-	}
-
-	public void stopRenderingObjects(String name) {
-		for (GameObject gameObject : gameObjects) {
-			if (gameObject.getName() == name) {
-				gameObjects.remove(gameObject);
-				afterRemoved(gameObject);
+				generateLayers(gameObject);
+			else {
+				layer = gameObject.transform.layer;
+				if (renderingLayers.size() <= layer)
+					renderingLayers.add(layer, new ArrayList<GameObject>());
+				renderingLayers.get(layer).add(gameObject);
+				gameObject.isRendered = true;
 			}
+
 		}
 	}
 

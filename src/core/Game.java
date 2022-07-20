@@ -5,8 +5,15 @@ public class Game {
 	public GameRenderer renderer;
 	public EventManager eventManager;
 	public Window window = new Window();
+	private Game instace = this;
+
+	public GameObject scene = new GameObject(this);
 
 	public Game(int width, int height) {
+		
+		
+		scene.transform.width = width;
+		scene.transform.height = height;
 		window.frame.setBounds(0, 0, width, height);
 		eventManager = new EventManager(this);
 		renderer = new GameRenderer(window);
@@ -30,7 +37,7 @@ public class Game {
 			public void run() {
 				while (true) {
 					long millis = System.currentTimeMillis();
-					renderer.update();
+					renderer.update(instace);
 					try {
 						Thread.sleep(16 - millis % 16);
 					} catch (InterruptedException e) {
@@ -44,21 +51,5 @@ public class Game {
 		gameLoop.start();
 		renderLoop.start();
 
-	}
-
-	public GameObject createGameObject() {
-		return new GameObject(this);
-	}
-
-	public GameObject createGameObject(String name) {
-		return new GameObject(this, name);
-	}
-
-	public GameObject createGameObject(int x, int y) {
-		return new GameObject(this, x, y);
-	}
-
-	public GameObject createGameObject(int x, int y, String name) {
-		return new GameObject(this, x, y, name);
 	}
 }
