@@ -1,16 +1,17 @@
 package core;
 
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import core.animation.AnimationSession;
 import core.tools.ImageRegistry;
 
 public class GameRenderer {
 
 	private Window window;
 	public ImageRegistry imageRegistry = new ImageRegistry();
+	public ArrayList<AnimationSession> animationSessions = new ArrayList<>();
 
 	public GameRenderer(Window window) {
 		this.window = window;
@@ -19,6 +20,8 @@ public class GameRenderer {
 	private ArrayList<ArrayList<GameObject>> renderingLayers = new ArrayList<ArrayList<GameObject>>();
 
 	public void update(Game gameInstace) {
+
+		runAnimations(gameInstace);
 
 		renderingLayers.clear();
 		generateLayers(gameInstace.scene);
@@ -31,17 +34,30 @@ public class GameRenderer {
 			for (GameObject gameObject : arrayList) {
 				if (gameObject instanceof ImageObject) {
 					ImageObject io = (ImageObject) gameObject;
-					g2d.drawImage(imageRegistry.getImage(io.getImg()), io.transform.getAbsoluteX(),
-							io.transform.getAbsoluteY(), null);
+					g2d.drawImage(imageRegistry.getImage(io.getImg()), (int) io.transform.getAbsoluteX(),
+							(int) io.transform.getAbsoluteY(), null);
 				} else if (gameObject instanceof TextObject) {
 					TextObject to = (TextObject) gameObject;
 					g2d.setColor(to.getTextColor());
 					g2d.setFont(to.getFont());
-					g2d.drawString(to.getText(), to.transform.getAbsoluteX(), to.transform.getAbsoluteY());
+					g2d.drawString(to.getText(), (int) to.transform.getAbsoluteX(), (int) to.transform.getAbsoluteY());
 				}
 
 			}
 		window.setPanelBC(i);
+	}
+
+	private long lastTime = System.currentTimeMillis();
+
+	@SuppressWarnings("unchecked")
+	private void runAnimations(Game gameInstace) {
+		long t = System.currentTimeMillis();
+		double dtime = (t - lastTime) / 1000d;
+		lastTime = t;
+		for (AnimationSession animationSession : (ArrayList<AnimationSession>) animationSessions.clone()) {
+			if (animationSession.update(dtime, gameInstace))
+				animationSessions.remove(animationSession);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

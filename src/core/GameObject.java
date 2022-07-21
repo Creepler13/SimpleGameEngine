@@ -2,9 +2,6 @@ package core;
 
 import java.util.ArrayList;
 
-import core.events.IEventListener;
-import core.events.KeyEventListerner;
-import core.events.MouseEventListerner;
 import core.tools.Transform;
 
 public class GameObject {
