@@ -24,12 +24,13 @@ public class EventManager {
 	public EventManager(Game gameInstace) {
 		this.gameInstace = gameInstace;
 
-		gameInstace.window.frame.addMouseListener(new MouseListener() {
+		gameInstace.window.panel.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				GameObject isON = GameUtils.getGameObjectAtPositionOnTop(gameInstace, e.getX(), e.getY());
 				for (MouseEventListerner MListerner : mouseListener) {
+					MListerner.isPressed = false;
 					if (MListerner.parent == isON)
 						MListerner.mouseReleased(e);
 				}
@@ -39,9 +40,12 @@ public class EventManager {
 			public void mousePressed(MouseEvent e) {
 				GameObject isON = GameUtils.getGameObjectAtPositionOnTop(gameInstace, e.getX(), e.getY());
 				for (MouseEventListerner MListerner : mouseListener) {
-					if (MListerner.parent == isON)
+					if (MListerner.parent == isON) {
 						MListerner.mousePressed(e);
+						MListerner.isPressed = true;
+					}
 				}
+
 			}
 
 			@Override
@@ -78,7 +82,7 @@ public class EventManager {
 			}
 		});
 
-		gameInstace.window.frame.addMouseMotionListener(new MouseMotionListener() {
+		gameInstace.window.panel.addMouseMotionListener(new MouseMotionListener() {
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
@@ -107,14 +111,14 @@ public class EventManager {
 			public void mouseDragged(MouseEvent e) {
 				GameObject isON = GameUtils.getGameObjectAtPositionOnTop(gameInstace, e.getX(), e.getY());
 				for (MouseEventListerner list : mouseListener) {
-					if (list.parent == isON)
+					if (list.parent == isON || list.isPressed)
 						list.mouseDragged(e);
 				}
 
 			}
 		});
 
-		gameInstace.window.frame.addKeyListener(new KeyListener() {
+		gameInstace.window.panel.addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {

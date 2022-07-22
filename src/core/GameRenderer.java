@@ -35,7 +35,8 @@ public class GameRenderer {
 				if (gameObject instanceof ImageObject) {
 					ImageObject io = (ImageObject) gameObject;
 					g2d.drawImage(imageRegistry.getImage(io.getImg()), (int) io.transform.getAbsoluteX(),
-							(int) io.transform.getAbsoluteY(), null);
+							(int) io.transform.getAbsoluteY(), (int) io.transform.width, (int) io.transform.height,
+							null);
 				} else if (gameObject instanceof TextObject) {
 					TextObject to = (TextObject) gameObject;
 					g2d.setColor(to.getTextColor());

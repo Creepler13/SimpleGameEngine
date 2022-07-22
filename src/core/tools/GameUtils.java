@@ -6,8 +6,8 @@ import core.GameObject;
 public class GameUtils {
 
 	public static Boolean isOnObject(GameObject obj, int x, int y) {
-		return x > obj.transform.x && x < obj.transform.x + obj.transform.width && y > obj.transform.y
-				&& y < obj.transform.y + obj.transform.height;
+		return x > obj.transform.getAbsoluteX() && x < obj.transform.getAbsoluteX() + obj.transform.width
+				&& y > obj.transform.getAbsoluteY() && y < obj.transform.getAbsoluteY() + obj.transform.height;
 	}
 
 	public static GameObject getGameObjectAtPositionOnTop(Game gameInstace, int x, int y) {

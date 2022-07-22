@@ -1,4 +1,5 @@
 package core.tools;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class ImageRegistry {
 	}
 
 	public void loadImageFolder(File folder) throws IOException {
+		System.out.println("Loading folder [ " + folder.getPath() + " ]");
 		if (!folder.isDirectory())
 			return;
 

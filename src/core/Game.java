@@ -2,6 +2,8 @@ package core;
 
 import java.util.ArrayList;
 
+import core.events.GameUpdateListener;
+
 public class Game {
 
 	public GameRenderer renderer;
@@ -19,10 +21,13 @@ public class Game {
 		window.frame.setBounds(0, 0, width, height);
 		eventManager = new EventManager(this);
 		renderer = new GameRenderer(window);
-		renderer.imageRegistry.loadImages("src/images");
 	}
 
 	public Thread gameLoop, renderLoop;
+
+	public void loadImages(String relativepath) {
+		renderer.imageRegistry.loadImages(relativepath);
+	}
 
 	public void addUpdateListener(GameUpdateListener updateListener) {
 		this.updateListeners.add(updateListener);

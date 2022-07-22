@@ -4,6 +4,8 @@ import java.awt.event.MouseEvent;
 
 public abstract class MouseEventListerner extends IEventListener {
 
+	public Boolean isPressed = false;
+
 	public abstract void mouseReleased(MouseEvent e);
 
 	public abstract void mousePressed(MouseEvent e);

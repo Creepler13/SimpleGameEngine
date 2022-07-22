@@ -32,6 +32,14 @@ public class Transform {
 		this.owner = owner;
 	}
 
+	public void setAbsoluteX(double newX) {
+		x = newX - (getAbsoluteX() - x);
+	}
+
+	public void setAbsoluteY(double newY) {
+		y = newY - (getAbsoluteY() - y);
+	}
+
 	public double getAbsoluteX() {
 		if (owner == null)
 			return x;
